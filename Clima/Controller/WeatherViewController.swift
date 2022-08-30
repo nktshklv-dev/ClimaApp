@@ -13,8 +13,8 @@ class WeatherViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var conditionImageView: UIImageView!
     @IBOutlet weak var temperatureLabel: UILabel!
     @IBOutlet weak var cityLabel: UILabel!
-    
     @IBOutlet var searchTextField: UITextField!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         searchTextField.delegate = self
@@ -24,14 +24,12 @@ class WeatherViewController: UIViewController, UITextFieldDelegate {
     var weatherManager = WeatherManager()
 
     @IBAction func searchButtonPressed(_ sender: UIButton) {
-    searchTextField.endEditing(true)
-       print(searchTextField.text!)
+        searchTextField.endEditing(true)
     }
     
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         searchTextField.endEditing(true)
-        print(searchTextField.text!)
         return true
     }
     
@@ -40,7 +38,7 @@ class WeatherViewController: UIViewController, UITextFieldDelegate {
         if searchTextField.text != ""{
             return true
         } else {
-            let ac = UIAlertController(title: "You should write something in text field to search it!", message: nil, preferredStyle: .alert)
+            let ac = UIAlertController(title: "You should write something inside the textfield to discover weather!", message: nil, preferredStyle: .alert)
             ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
             present(ac, animated: true, completion: nil)
             return false
