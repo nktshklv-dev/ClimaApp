@@ -9,42 +9,55 @@
 import Foundation
 
 
-class WeatherManager{
+struct WeatherManager{
     
     let weatherURL =  "https://api.openweathermap.org/data/2.5/weather?appid=c2249643fbc743dff414b110230958ed&units=metric"
     
-     func fetchWeather(cityName: String){
+    func fetchWeather(cityName: String){
         let urlString = "\(weatherURL)&q=\(cityName)"
         print(urlString)
         performRequest(urlString: urlString)
     }
     
     
-     func performRequest(urlString: String){
-     //MARK: - 1. Create a URL
-         guard let url = URL(string: urlString) else { return }
-         
-      //MARK: - 2. Create a URLSession (it's the thing that can perform networking)
-         let session = URLSession(configuration: .default)
-         
-      //MARK: - 3. Give URLSession a task
-         let task =  session.dataTask(with: url) { data, response, error in
-             guard error == nil else {
-                 print(error!.localizedDescription)
-                 return
-             }
-             
-             guard let safeData = data else {return}
-             guard let dataString = String(data: safeData, encoding: .utf8) else {return}
-             print(dataString)
-             
-         }
-         
-      //MARK: - 4. Start the task
-         //Newly-initialized tasks begin in a suspended state, so you need to call this method to start the task.
-         task.resume()
-     }
+    func performRequest(urlString: String){
+        //MARK: - 1. Create a URL
+        guard let url = URL(string: urlString) else { return }
+        
+        //MARK: - 2. Create a URLSession (it's the thing that can perform networking)
+        let session = URLSession(configuration: .default)
+        
+        //MARK: - 3. Give URLSession a task
+        let task =  session.dataTask(with: url) { data, response, error in
+            guard error == nil else {
+                print(error!.localizedDescription)
+                return
+            }
+            
+            guard let safeData = data else {return}
+            self.parseJSON(weatherData: safeData)
+            
+        }
+        
+        //MARK: - 4. Start the task
+        //Newly-initialized tasks begin in a suspended state, so you need to call this method to start the task.
+        task.resume()
+    }
+    
+    
+    func parseJSON(weatherData: Data){
+        let decoder = JSONDecoder()
+        do{
+            let decodedData = try decoder.decode(WeatherData.self, from: weatherData)
+            print(decodedData.name)
+            print(decodedData.main.temp)
+            print(decodedData.weather[0].description)
+        } catch{
+            print(error.localizedDescription)
+        }
+       
+    }
 }
-    
-    
+
+
 
