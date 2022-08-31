@@ -23,6 +23,7 @@ class WeatherViewController: UIViewController{
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         searchTextField.delegate = self
         weatherManager.delegate = self
         locationManager.delegate = self
@@ -42,7 +43,7 @@ class WeatherViewController: UIViewController{
     
 }
 
-//MARK: - UITextFieldDelegate extension
+//MARK: - UITextFieldDelegate
 extension WeatherViewController: UITextFieldDelegate{
     
     
@@ -77,13 +78,12 @@ extension WeatherViewController: UITextFieldDelegate{
     
 }
 
-//MARK: - WeatherManagerDelegate extension
+//MARK: - WeatherManagerDelegate
 extension WeatherViewController: WeatherManagerDelegate{
     
     func didUpdateWeather(_ weatherManager: WeatherManager, weather: WeatherModel) {
         DispatchQueue.main.async {
             self.temperatureLabel.text = weather.temperatureString
-            print(weather.conditionName)
             self.conditionImageView.image = UIImage(systemName: weather.conditionName)
             self.cityLabel.text = weather.cityName
             
@@ -104,8 +104,7 @@ extension WeatherViewController: CLLocationManagerDelegate{
         guard let location = locations.last else {return}
         locationManager.stopUpdatingLocation()
         self.location = location
-        let coordinate = location.coordinate
-        weatherManager.fetchWeather(lat: coordinate.latitude, lon: coordinate.longitude)
+        weatherManager.fetchWeather(lat: location.coordinate.latitude, lon: location.coordinate.longitude)
         print(location.coordinate)
     }
     
