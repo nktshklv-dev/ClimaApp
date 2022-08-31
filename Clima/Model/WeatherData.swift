@@ -19,5 +19,5 @@ struct Main: Codable{
     let temp: Double
 }
 struct Weather: Codable{
-    let description: String
+    let id: Int
 }
