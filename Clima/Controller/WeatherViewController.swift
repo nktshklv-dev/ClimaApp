@@ -8,21 +8,25 @@
 
 import UIKit
 
-class WeatherViewController: UIViewController, UITextFieldDelegate {
-
+class WeatherViewController: UIViewController{
+    
     @IBOutlet weak var conditionImageView: UIImageView!
     @IBOutlet weak var temperatureLabel: UILabel!
     @IBOutlet weak var cityLabel: UILabel!
     @IBOutlet var searchTextField: UITextField!
+    var weatherManager = WeatherManager()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         searchTextField.delegate = self
+        weatherManager.delegate = self
     }
-    
-    
-    var weatherManager = WeatherManager()
+}
 
+//MARK: - UITextFieldDelegate extension
+extension WeatherViewController: UITextFieldDelegate{
+    
+    
     @IBAction func searchButtonPressed(_ sender: UIButton) {
         searchTextField.endEditing(true)
     }
@@ -52,5 +56,22 @@ class WeatherViewController: UIViewController, UITextFieldDelegate {
         searchTextField.text = ""
     }
     
+}
+
+//MARK: - WeatherManagerDelegate extension
+extension WeatherViewController: WeatherManagerDelegate{
+    
+    func didUpdateWeather(_ weatherManager: WeatherManager, weather: WeatherModel) {
+        DispatchQueue.main.async {
+            self.temperatureLabel.text = weather.temperatureString
+            print(weather.conditionName)
+            self.conditionImageView.image = UIImage(systemName: weather.conditionName)
+        }
+    }
+    
+    //when we want to display some errors in UI
+    func didFailWithError(error: Error) {
+        print(error.localizedDescription)
+    }
 }
 

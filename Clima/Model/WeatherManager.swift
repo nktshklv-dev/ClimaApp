@@ -8,19 +8,25 @@
 
 import Foundation
 
+protocol WeatherManagerDelegate{
+    func didUpdateWeather(_ weatherManager: WeatherManager, weather: WeatherModel)
+    func didFailWithError(error: Error)
+}
+
 
 struct WeatherManager{
     
     let weatherURL =  "https://api.openweathermap.org/data/2.5/weather?appid=c2249643fbc743dff414b110230958ed&units=metric"
+    var delegate: WeatherManagerDelegate?
     
     func fetchWeather(cityName: String){
         let urlString = "\(weatherURL)&q=\(cityName)"
         print(urlString)
-        performRequest(urlString: urlString)
+        performRequest(with: urlString)
     }
     
     
-    func performRequest(urlString: String){
+    func performRequest(with urlString: String){
         //MARK: - 1. Create a URL
         guard let url = URL(string: urlString) else { return }
         
@@ -30,12 +36,15 @@ struct WeatherManager{
         //MARK: - 3. Give URLSession a task
         let task =  session.dataTask(with: url) { data, response, error in
             guard error == nil else {
-                print(error!.localizedDescription)
+                delegate?.didFailWithError(error: error!)
                 return
             }
             
             guard let safeData = data else {return}
-            self.parseJSON(weatherData: safeData)
+            guard let weather = self.parseJSON(safeData) else {return}
+            self.delegate?.didUpdateWeather(self, weather: weather)
+            
+            
             
         }
         
@@ -45,7 +54,7 @@ struct WeatherManager{
     }
     
     
-    func parseJSON(weatherData: Data){
+    func parseJSON(_ weatherData: Data) -> WeatherModel? {
         let decoder = JSONDecoder()
         do{
             let decodedData = try decoder.decode(WeatherData.self, from: weatherData)
@@ -54,12 +63,12 @@ struct WeatherManager{
             let conditionID = decodedData.weather[0].id
             
             let weather = WeatherModel(conditionID: conditionID, cityName: cityName, temperature: temp)
-            let condName = weather.conditionName
-            print(condName)
-            print(weather.temperatureString)
+            
+            return weather
             
         } catch{
-            print(error.localizedDescription)
+            delegate?.didFailWithError(error: error)
+            return nil
         }
        
     }
