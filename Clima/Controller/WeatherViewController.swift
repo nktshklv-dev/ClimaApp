@@ -15,11 +15,12 @@ class WeatherViewController: UIViewController{
     @IBOutlet weak var temperatureLabel: UILabel!
     @IBOutlet weak var cityLabel: UILabel!
     @IBOutlet var searchTextField: UITextField!
-    
-    var location = CLLocation()
+   
     
     var weatherManager = WeatherManager()
     let locationManager = CLLocationManager()
+    
+    var location = CLLocation()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -62,7 +63,7 @@ extension WeatherViewController: UITextFieldDelegate{
         if searchTextField.text != ""{
             return true
         } else {
-            let ac = UIAlertController(title: "You should write something inside the textfield to discover weather!", message: nil, preferredStyle: .alert)
+            let ac = UIAlertController(title: "You should write something inside the textfield to see weather!", message: nil, preferredStyle: .alert)
             ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
             present(ac, animated: true, completion: nil)
             return false
