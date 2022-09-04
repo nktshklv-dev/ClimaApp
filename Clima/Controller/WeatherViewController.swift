@@ -33,16 +33,9 @@ class WeatherViewController: UIViewController{
         locationManager.requestLocation()
     }
     
-    @IBAction func requestLocationButttonPressed(_ sender: UIButton) {
-        locationManager.requestLocation()
-        weatherManager.fetchWeather(lat: location.coordinate.latitude, lon: location.coordinate.longitude)
-    }
-    
-    
-    
-    
-    
+  
 }
+    
 
 //MARK: - UITextFieldDelegate
 extension WeatherViewController: UITextFieldDelegate{
@@ -113,5 +106,10 @@ extension WeatherViewController: CLLocationManagerDelegate{
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print(error.localizedDescription)
     }
-}
+    
+    @IBAction func requestLocationButttonPressed(_ sender: UIButton) {
+        locationManager.requestLocation()
+        weatherManager.fetchWeather(lat: location.coordinate.latitude, lon: location.coordinate.longitude)
+    }
 
+}
