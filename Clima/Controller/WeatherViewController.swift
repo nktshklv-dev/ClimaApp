@@ -102,7 +102,6 @@ extension WeatherViewController: CLLocationManagerDelegate{
         print(location.coordinate)
     }
     
-    
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print(error.localizedDescription)
     }
